@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: ./kompose convert
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: docker-registry-ui
+  name: docker-registry-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: docker-registry-ui
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: ./kompose convert
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: docker-registry-ui
+    spec:
+      containers:
+      - env:
+        - name: ENV_DOCKER_REGISTRY_HOST
+          value: 192.168.0.135
+        - name: ENV_DOCKER_REGISTRY_PORT
+          value: "30183"
+        image: konradkleine/docker-registry-frontend:v2
+        imagePullPolicy: ""
+        name: syed-docker-registry-ui
+        ports:
+        - containerPort: 80
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}

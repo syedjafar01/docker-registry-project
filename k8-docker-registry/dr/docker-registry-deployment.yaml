@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: ./kompose convert
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: docker-registry
+  name: docker-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: docker-registry
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: ./kompose convert
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: docker-registry
+    spec:
+      containers:
+      - env:
+        - name: REGISTRY_AUTH
+          value: htpasswd
+        - name: REGISTRY_AUTH_HTPASSWD_PATH
+          value: /auth/htpasswd
+        - name: REGISTRY_AUTH_HTPASSWD_REALM
+          value: Registry Realm
+        - name: REGISTRY_HTTP_TLS_CERTIFICATE
+          value: /certs/domain.crt
+        - name: REGISTRY_HTTP_TLS_KEY
+          value: /certs/domain.key
+        image: registry:2
+        imagePullPolicy: ""
+        name: syed-docker-registry
+        ports:
+        - containerPort: 5000
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/registry
+          name: img-volume
+        - mountPath: /certs
+          name: certs-volume
+        - mountPath: /auth
+          name: auth-volume
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: img-volume
+        persistentVolumeClaim:
+          claimName: img-volume
+      - name: certs-volume
+        persistentVolumeClaim:
+          claimName: certs-volume
+      - name: auth-volume
+        persistentVolumeClaim:
+          claimName: auth-volume
+status: {}

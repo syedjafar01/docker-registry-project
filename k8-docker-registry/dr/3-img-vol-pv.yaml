@@ -1,0 +1,18 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: img-volume
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/Users/syed/work/kubernetes/docker-registry/volume"
+  claimRef:
+    kind: PersistentVolumeClaim
+    namespace: default
+    name: img-volume

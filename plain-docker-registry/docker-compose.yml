@@ -1,0 +1,30 @@
+---
+version: '3'
+
+services:
+    docker-registry:
+        image: registry:2
+        container_name: syed-docker-registry
+        ports:
+            - "127.0.0.1:5000:5000"
+        restart: always
+        environment:
+            REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.crt
+            REGISTRY_HTTP_TLS_KEY: /certs/domain.key
+            REGISTRY_AUTH: htpasswd
+            REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+            REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+        volumes:
+            - ../volume:/var/lib/registry
+            - ../certs:/certs
+            - ../auth:/auth
+
+    docker-registry-ui:
+        image: konradkleine/docker-registry-frontend:v2
+        container_name: syed-docker-registry-ui
+        ports:
+            - "127.0.0.1:8080:80"
+        environment:
+            ENV_DOCKER_REGISTRY_HOST: syed-docker-registry
+            ENV_DOCKER_REGISTRY_PORT: 5000
+            
